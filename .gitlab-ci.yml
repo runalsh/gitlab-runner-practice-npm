@@ -6,7 +6,7 @@ stages:
 build:
   stage: build
   script:
-    - echo "build thgis is"
+    - echo "build th is"
     - hostname
     - mkdir builds
     - touch builds/data.txt
