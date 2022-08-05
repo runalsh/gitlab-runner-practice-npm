@@ -56,7 +56,6 @@
 
 
 stages:
-  # - build
   - runeeeeeee
 
 build-docker:
