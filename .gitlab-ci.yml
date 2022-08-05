@@ -80,7 +80,7 @@ running:
   before_script:
     - docker login -u gitlab+deploy-token-1249784 -p ${ACCESS_TOKEN} registry.gitlab.com
   script:
-    - docker run -it -p 3000:3000 --name test-ci registry.gitlab.com/runalsh/mymymy:main
+    - docker run -p 3000:3000 --name test-ci registry.gitlab.com/runalsh/mymymy:main
 
 
 
