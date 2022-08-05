@@ -43,6 +43,7 @@ pack-gz:
 pack-iso:
   stage: package
   script:
+  # - sudo yum install mkisofs -y
   - mkisofs -o ./packaged.iso ./compiled.txt
   artifacts:
     paths:
