@@ -1,17 +1,21 @@
-stages:
-    - build
-    - test
-    - deploy
+# stages:
+#     - build
+#     - test
+#     - deploy
 
-maven-build:
-  image: maven:3-jdk-11
-  stage: build
-  script: "mvn package -B"
-  artifacts:
-    paths:
-      - target/gitlab-ci-demo.jar
+# maven-build:
+#   image: maven:3-jdk-11
+#   stage: build
+#   script: "mvn package -B"
+#   artifacts:
+#     paths:
+#       - target/gitlab-ci-demo.jar
 
+test:
+  script: cat file1.txt file2.txt | grep -q 'Hello world'
 
+package:
+  script: cat file1.txt file2.txt | gzip > package.gz
 
 
       
