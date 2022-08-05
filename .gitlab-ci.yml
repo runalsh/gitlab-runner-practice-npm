@@ -62,7 +62,7 @@ build-docker:
   stage: build
   image: docker:stable
   only:
-    - master
+    - main
     - develop
   services:
     - docker:dind
