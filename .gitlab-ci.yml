@@ -18,53 +18,38 @@ stages:
   - test
   - package
 
-# compile:
-#   stage: compile
-#   script: 
-#     - echo "Hello world 1" > file1.txt
-#     - echo "Hello world 2" > file2.txt
-#     - cat file1.txt file2.txt > compiled.txt
-#   artifacts:
-#     paths:
-#     - compiled.txt
-#     - file1.txt
-
-
-# test:
-#   stage: test
-#   script: cat compiled.txt | grep -q 'Hello world'
-
-# pack-gz:
-#   stage: package
-#   script: cat compiled.txt | gzip > packaged.gz
-#   artifacts:
-#     paths:
-#     - packaged.gz
-#     - file1.txt
-
-# pack-iso:
-#   stage: package
-#   before_script:
-#   - echo "ipv6" >> /etc/modules
-#   - apk update
-#   - apk add xorriso
-#   script:
-#   - mkisofs -o ./packaged.iso ./compiled.txt
-#   artifacts:
-#     paths:
-#     - packaged.iso    
-
-
 compile:
   stage: compile
   script: 
-    - docker build -t my-docker-image .
-    - docker run my-docker-image
+    - echo "Hello world 1" > file1.txt
+    - echo "Hello world 2" > file2.txt
+    - cat file1.txt file2.txt > compiled.txt
+  artifacts:
+    paths:
+    - compiled.txt
+    - file1.txt
 
 
+test:
+  stage: test
+  script: cat compiled.txt | grep -q 'Hello world'
 
+pack-gz:
+  stage: package
+  script: cat compiled.txt | gzip > packaged.gz
+  artifacts:
+    paths:
+    - packaged.gz
+    - file1.txt
 
-
-
-
-
+pack-iso:
+  stage: package
+  before_script:
+  - echo "ipv6" >> /etc/modules
+  - apk update
+  - apk add xorriso
+  script:
+  - mkisofs -o ./packaged.iso ./compiled.txt
+  artifacts:
+    paths:
+    - packaged-$CI_JOB_ID-$CI_COMMIT_SHORT_SHA.iso    
