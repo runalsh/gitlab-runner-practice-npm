@@ -57,6 +57,7 @@
 
 stages:
   - build
+  - run
 
 build-docker:
   stage: build
@@ -72,6 +73,13 @@ build-docker:
     - docker push ${DOCKER_ENV_CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
 
 
+running:
+  stage: run
+  only: main
+  before_script:
+    - docker login -u gitlab+deploy-token-1249784 -p ${ACCESS_TOKEN} registry.gitlab.com
+  script:
+    - docker run -it -p 3000:3000 --name test-ci ${DOCKER_ENV_CI_REGISTRY_IMAGE}:main
 
 
 
