@@ -75,7 +75,8 @@ build-docker:
 
 running:
   stage: run
-  only: main
+  only: 
+    - main
   before_script:
     - docker login -u gitlab+deploy-token-1249784 -p ${ACCESS_TOKEN} registry.gitlab.com
   script:
