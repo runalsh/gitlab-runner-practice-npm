@@ -25,6 +25,7 @@ compile:
     paths:
     - compiled.txt
 
+
 test:
   stage: test
   script: cat compiled.txt | grep -q 'Hello world'
