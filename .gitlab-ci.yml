@@ -1,36 +1,17 @@
-
-image: node:10.5.0
-
-before_script:
-    - npm install
-
 stages:
     - build
     - test
     - deploy
 
-build:
+maven-build:
+  image: maven:3-jdk-11
   stage: build
-  script:
-    - npm install
-    - npm run minifier
-
-test:
-  stage: test
-  script:
-    - npm run test
+  script: "mvn package -B"
+  artifacts:
+    paths:
+      - target/gitlab-ci-demo.jar
 
 
-deploy-stage:
-  stage: deploy
-  script:
-    - npm run deploy-stage
-  only:
-    - dev
 
-deploy-prod:
-    stage: deploy
-    script:
-      - npm run deploy-prod
-    only:
-      - main
+
+      
