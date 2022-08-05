@@ -1,24 +1,36 @@
-stages:
-  - build
-  - test
 
+image: node:10.5.0
+
+before_script:
+    - npm install
+
+stages:
+    - build
+    - test
+    - deploy
 
 build:
   stage: build
   script:
-    - echo "build th is"
-    - hostname
-    - mkdir builds
-    - touch builds/data.txt
-    - echo "true" > builds/data.txt
-  artifacts:
-    paths:
-      - builds/
+    - npm install
+    - npm minifier
 
 test:
   stage: test
   script:
-    - echo "testingthgis is"
-    - hostname
-    - test -f builds/data.txt
-    - grep "true" builds/data.txt
+    - npm run test
+
+
+deploy-stage:
+  stage: deploy
+  script:
+    - npm run deploy-stage
+  only:
+    - dev
+
+deploy-prod:
+    stage: deploy
+    script:
+      - npm run deploy-prod
+    only:
+      - master
