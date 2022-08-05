@@ -42,8 +42,11 @@ pack-gz:
 
 pack-iso:
   stage: package
+  before_script:
+  - echo "ipv6" >> /etc/modules
+  - apk update
+  - apk add xorriso
   script:
-  # - sudo yum install mkisofs -y
   - mkisofs -o ./packaged.iso ./compiled.txt
   artifacts:
     paths:
