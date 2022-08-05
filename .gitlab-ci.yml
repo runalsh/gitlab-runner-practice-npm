@@ -40,7 +40,7 @@ pack-gz:
   artifacts:
     paths:
     - packaged.gz
-    - file2.txt
+    - file1.txt
 
 pack-iso:
   stage: package
