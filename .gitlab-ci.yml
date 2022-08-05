@@ -63,7 +63,6 @@ build-docker:
   image: docker:stable
   only:
     - main
-    - develop
   services:
     - docker:dind
   before_script:
