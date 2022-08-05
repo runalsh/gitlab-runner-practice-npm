@@ -11,6 +11,8 @@
 #     paths:
 #       - target/gitlab-ci-demo.jar
 
+image: alpine
+
 stages:
   - compile
   - test
@@ -27,9 +29,17 @@ test:
   stage: test
   script: cat compiled.txt | grep -q 'Hello world'
 
-package:
+pack-gz:
   stage: package
   script: cat compiled.txt | gzip > packaged.gz
   artifacts:
     paths:
     - packaged.gz
+
+pack-iso:
+  stage: package
+  script:
+  - mkisofs -o ./packaged.iso ./compiled.txt
+  artifacts:
+    paths:
+    - packaged.iso    
