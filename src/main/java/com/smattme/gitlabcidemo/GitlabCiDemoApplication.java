@@ -13,13 +13,3 @@ public class GitlabCiDemoApplication {
 }
 
 
-@Controller                                           
-public class IndexController {                        
-
-    @GetMapping("/")                                  
-    @ResponseBody                                     
-    public String index() {                           
-        return "Hello World " + LocalDateTime.now();  
-    }                                                 
-
-}
