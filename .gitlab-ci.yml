@@ -11,11 +11,25 @@
 #     paths:
 #       - target/gitlab-ci-demo.jar
 
+stages:
+  - compile
+  - test
+  - package
+
+compile:
+  stage: compile
+  script: cat file1.txt file2.txt > compiled.txt
+  artifacts:
+    paths:
+    - compiled.txt
+
 test:
-  script: cat file1.txt file2.txt | grep -q 'Hello world'
+  stage: test
+  script: cat compiled.txt | grep -q 'Hello world'
 
 package:
-  script: cat file1.txt file2.txt | gzip > package.gz
-
-
-      
+  stage: package
+  script: cat compiled.txt | gzip > packaged.gz
+  artifacts:
+    paths:
+    - packaged.gz
