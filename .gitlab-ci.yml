@@ -126,7 +126,8 @@ push_image:
 deploy_image:
   stage: deploy
   script:
-    - echo "run deploy to $DEPLOYMENT_ENVIROMENT"
+    - echo "run deploy to $DEPLOYMENT_ENVIROMENT using follow configuration file - $proper_file"
+    - cat $proper_file
 
 
 
