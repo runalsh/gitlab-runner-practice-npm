@@ -129,7 +129,7 @@ build_image:
   script:
     - docker build -t $IMAGE_NAME:$VERSION .
   artifacts:
-    reporst:
+    reports:
       dotenv: version.env
     # paths:
     #   - version.env
