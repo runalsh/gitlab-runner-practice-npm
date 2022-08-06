@@ -106,7 +106,6 @@ run_lint_test:
   stage: test
   before_script:
     - echo "preparing test data"
-    - pwd
   script:
     - echo "run lint test"
   after_script:
