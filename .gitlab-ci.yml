@@ -87,15 +87,15 @@ workflow:
       when: never
     - when: always 
 
-stage:
+stages:
   - test
   - build
 
 run_unit_test:
   image: node:17-alpine3.14
-  stage: build
+  stage: test
   tags:
-    - dockeralpinetag
+    - shelltag
   before_script:
     - cd app
     - npm install
@@ -111,7 +111,7 @@ run_unit_test:
 build_image:
   stage: build
   tags:
-    - dockeralpinetag
+    - shelltag
   script:
     - docker build -t $CI_REGISTRY_IMAGE:1.0 .
 
@@ -121,10 +121,10 @@ push_image:
   needs: 
     - build_image
   tags:
-    - dockeralpinetag
+    - shelltag
   before_script:    
-    - echo 'docker registry url is $CI_REGISTRY"
-    - echo 'docker image url is $CI_REGISTRY_IMAGE"
+    - echo "docker registry url is $CI_REGISTRY"
+    - echo "docker image url is $CI_REGISTRY_IMAGE"
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker push $CI_REGISTRY_IMAGE:1.0
