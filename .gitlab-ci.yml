@@ -95,7 +95,7 @@ run_unit_test:
   image: node:17-alpine3.14
   stage: test
   tags:
-    - shelltag
+    - dockeralpinetag
   before_script:
     - cd app
     - npm install
@@ -111,7 +111,7 @@ run_unit_test:
 build_image:
   stage: build
   tags:
-    - shelltag
+    - dockeralpinetag
   script:
     - docker build -t $CI_REGISTRY_IMAGE:1.0 .
 
