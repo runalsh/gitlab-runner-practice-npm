@@ -81,7 +81,11 @@
 #   script:
 #     - docker run -p 3000:3000 --name test-ci registry.gitlab.com/runalsh/mymymy:main
 
-
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH != "main"
+      when: never
+    - when: always 
 
 stages:
   - test
@@ -96,8 +100,7 @@ run_unit_test:
     - echo "run unit test"
   after_script:
     - echo "clean temp"
-    - rm -r test-data
-    - ls
+
 
 run_lint_test:
   stage: test
@@ -111,8 +114,6 @@ run_lint_test:
 
 build_image:
   stage: build
-  only:
-   - main
   script:
     - echo "build docker image"
 
