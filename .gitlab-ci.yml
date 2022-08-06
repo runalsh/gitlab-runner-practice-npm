@@ -117,6 +117,11 @@ build_image:
   script:
     - echo "build docker image"
 
+push_image:
+  stage: build
+  script:
+    - echo "push docker image"
+
 deploy_image:
   stage: deploy
   script:
