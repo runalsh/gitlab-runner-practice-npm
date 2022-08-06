@@ -93,6 +93,7 @@ stages:
   - build
   - deploydev
   - deploystaging
+  - deployprod
 
 variables:
   IMAGE_NAME: $CI_REGISTRY_IMAGE
