@@ -112,8 +112,6 @@ run_unit_test:
 run_lint_test:
   stage: test
   tags:
-    - shelltag
-    - dockeralpinetag
     - dockeralpinprivetag
   before_script:
     - echo "preparing test data"
