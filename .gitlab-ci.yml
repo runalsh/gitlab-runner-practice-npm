@@ -92,8 +92,6 @@ run_unit_test:
   stage: test
   before_script:
     - echo "preparing tesdt"
-    - chmod +x ./prepare-test.sh
-    - ./prepare-test.sh
   script:
     - echo "run unit test"
   after_script:
@@ -111,15 +109,18 @@ run_lint_test:
   after_script:
     - echo "clean temp"   
 
-run_deploy:
-  stage: deploy
-  before_script:
-    - echo "preparing deplloy data"
-    - pwd
+build_image:
+  stage: build
+  only:
+   - main
   script:
-    - echo "run deploy test"
-  after_script:
-    - echo "clean deploy temp" 
+    - echo "build docker image"
+
+deploy_image:
+  stage: deploy
+  script:
+    - echo "run deploy"
+
 
 
 
