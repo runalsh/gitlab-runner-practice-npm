@@ -90,6 +90,8 @@ workflow:
 
 run_unit_test:
   image: node:17-alpine3.14
+  tags:
+    - dockeralpinetag
   before_script:
     - cd app
     - npm install
