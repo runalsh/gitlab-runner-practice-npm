@@ -1,6 +1,6 @@
 version: "3.3"
 services:
   app:
-    image: ${DC_IMAGE_NAME}:${DC_IMAGE_TAG}
+    image: registry.gitlab.com/runalsh/mymymy/microservice/shopping-cart:1.2
     ports:
-      - ${DC_APP_PORT}:3000
+      - 3000:3000
