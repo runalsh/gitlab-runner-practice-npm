@@ -88,7 +88,7 @@ workflow:
     - when: always 
 
 stages:
-  # - test
+  - test
   - build
   - deploy
 
@@ -98,22 +98,44 @@ variables:
   DEVSERVER: 18.195.191.206
   DEVENDPOINT: http://ec2-18-195-191-206.eu-central-1.compute.amazonaws.com
 
-# run_unit_test:
-#   image: node:17-alpine3.14
-#   stage: test
-#   tags:
-#     - dockeralpinetag
-#   before_script:
-#     - cd app
-#     - npm install
-#   script:
-#     - npm test
-#   artifacts:
-#     when: always
-#     paths:
-#       - app/junit.xml
-#     reports:
-#       junit: app/junit.xml
+run_unit_test:
+  image: node:17-alpine
+  stage: test
+  tags:
+    - dockeralpinetag
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
+      - app/node_modules
+    policy: pull-push  
+  before_script:
+    - cd app
+    - npm install
+  script:
+    - npm test
+  artifacts:
+    when: always
+    paths:
+      - app/junit.xml
+    reports:
+      junit: app/junit.xml
+
+run_lint_test:
+  image: node:17-alpine
+  stage: test
+  tags:
+    - dockeralpinetag
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
+      - app/node_modules  
+    policy: pull  
+  before_script:
+    - cd app
+    - npm install
+  script:
+    - echo "run linter test"
+      
 
 build_image:
   # image: docker:stable
