@@ -55,34 +55,64 @@
 #     - packaged-$CI_JOB_ID-$CI_COMMIT_SHORT_SHA.iso    
 
 
-stages:
-  - build
-  - runeeeeeee
+# stages:
+#   - build
+#   - runeeeeeee
 
-build-docker:
-  stage: build
-  image: docker:stable
-  only:
-    - main
-  services:
-    - docker:dind
-  before_script:
-    - docker login -u gitlab+deploy-token-1249784 -p ${ACCESS_TOKEN} registry.gitlab.com
-  script:
-    - docker build -t ${DOCKER_ENV_CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} --build-arg branch=${CI_COMMIT_REF_NAME} .
-    - docker push ${DOCKER_ENV_CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
+# build-docker:
+#   stage: build
+#   image: docker:stable
+#   only:
+#     - main
+#   services:
+#     - docker:dind
+#   before_script:
+#     - docker login -u gitlab+deploy-token-1249784 -p ${ACCESS_TOKEN} registry.gitlab.com
+#   script:
+#     - docker build -t ${DOCKER_ENV_CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} --build-arg branch=${CI_COMMIT_REF_NAME} .
+#     - docker push ${DOCKER_ENV_CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
     
-running:
-  stage: runeeeeeee
-  only: 
-    - main
+# running:
+#   stage: runeeeeeee
+#   only: 
+#     - main
+#   before_script:
+#     - docker login -u gitlab+deploy-token-1249784 -p ${ACCESS_TOKEN} registry.gitlab.com
+#   script:
+#     - docker run -p 3000:3000 --name test-ci registry.gitlab.com/runalsh/mymymy:main
+
+
+
+stages:
+  - test
+  - build
+  - deploy
+
+run_unit_test:
+  stage: test
   before_script:
-    - docker login -u gitlab+deploy-token-1249784 -p ${ACCESS_TOKEN} registry.gitlab.com
+    - echo "preparing tesdt"
+    - pwd
+    - ls
+    - mkdir test-data
+    - ls
   script:
-    - docker run -p 3000:3000 --name test-ci registry.gitlab.com/runalsh/mymymy:main
+    - echo "run unit test"
+  after_script:
+    - echo "clean temp"
+    - rm -r test-data
+    - ls
 
 
-
+run_lint_test:
+  stage: test
+  before_script:
+    - echo "preparing test data"
+    - pwd
+  script:
+    - echo "run lint test"
+  after_script:
+    - echo "clean temp"   
 
 
 
