@@ -89,15 +89,19 @@ workflow:
 
 stages:
   - test
-  - secuirity
+  # - secuirity
   - build
-  - deploy
+  - deploydev
+  - deploystage
 
 variables:
   IMAGE_NAME: $CI_REGISTRY_IMAGE
   IMAGE_TAG: "1.2.0"
   DEVSERVER: 18.195.191.206
-  DEVENDPOINT: http://ec2-18-195-191-206.eu-central-1.compute.amazonaws.com
+  DEVENDPOINT: http://ec2-18-195-191-206.eu-central-1.compute.amazonaws.com:3000
+  STAGING_SERVER_HOST: 18.195.191.206
+  STAGINGDPOINT: http://ec2-18-195-191-206.eu-central-1.compute.amazonaws.com:4000
+
 
 run_unit_test:
   image: node:17-alpine
@@ -121,21 +125,21 @@ run_unit_test:
     reports:
       junit: app/junit.xml
 
-run_lint_test:
-  image: node:17-alpine
-  stage: test
-  tags:
-    - dockeralpinetag
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    paths:
-      - app/node_modules  
-    policy: pull  
-  before_script:
-    - cd app
-    - npm install
-  script:
-    - echo "run linter test"
+# run_lint_test:
+#   image: node:17-alpine
+#   stage: test
+#   tags:
+#     - dockeralpinetag
+#   cache:
+#     key: "$CI_COMMIT_REF_NAME"
+#     paths:
+#       - app/node_modules  
+#     policy: pull  
+#   before_script:
+#     - cd app
+#     - npm install
+#   script:
+#     - echo "run linter test"
 
 # sonarqube-check:
 #   stage: secuirity
@@ -152,11 +156,11 @@ run_lint_test:
 #   script:
 #     - sonar-scanner      
 
-sast:
-  stage: secuirity
+# sast:
+#   stage: secuirity
 
-include:
-  - template: Jobs/SAST.gitlab-ci.yml  
+# include:
+#   - template: Jobs/SAST.gitlab-ci.yml
 
 build_image:
   # image: docker:stable
@@ -196,7 +200,7 @@ push_image:
 
 
 deploy_to_dev:
-  stage: deploy
+  stage: deploydev
   tags: 
     - shelltag
   before_script:
@@ -208,9 +212,41 @@ deploy_to_dev:
         docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && 
         export IMAGE_NAME=$IMAGE_NAME &&
         export IMAGE_TAG=$VERSION  &&
+        export APPPORT=3000 &&
+        export COMPOSE_PROJECT_NAME=dev &&
         docker compose down &&
         docker compose up -d"
   environment:
     name: development
     url: $DEVENDPOINT
+
+run_functional_test:
+  stage: deploydev
+  needs:
+    - deploy_to_dev
+  script:
+    - echo "running funct test"  
+
+deploy_to_staging:
+  stage: deploystaging
+  tags: 
+    - shelltag
+  before_script:
+    - chmod 400 $SSH_PIVATE_KEY
+    # - export VERSION=$(cat version.env) 
+  script:
+    - scp -o StrictHostKeyChecking=no -i $SSH_PIVATE_KEY ./docker-compose.yaml admin@$DEVSERVER:/home/admin
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PIVATE_KEY admin@$DEVSERVER "
+        docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && 
+        export IMAGE_NAME=$IMAGE_NAME &&
+        export IMAGE_TAG=$VERSION  &&
+        export APPPORT=4000 &&
+        export COMPOSE_PROJECT_NAME=staging &&
+        docker compose down &&
+        docker compose up -d"
+  environment:
+    name: staging
+    url: $STAGINGDPOINT
+
+
 
