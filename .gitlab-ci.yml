@@ -98,8 +98,7 @@ stages:
 
 run_unit_test:
   stage: test
-  tags:
-    - shelltag
+
   image: node:17-alpine
   before_script:
     - echo "preparing tesdt"
@@ -112,8 +111,7 @@ run_unit_test:
 
 run_lint_test:
   stage: test
-  tags:
-    - dockeralpinprivetag
+
   before_script:
     - echo "preparing test data"
   script:
@@ -123,9 +121,7 @@ run_lint_test:
 
 build_image:
   stage: build
-  tags:
-    - shelltag
-    - dockeralpinetag
+
   only:
     - main
   script:
@@ -135,17 +131,13 @@ build_image:
 
 push_image:
   stage: build
-  tags:
-    - shelltag
-    - dockeralpinetag
+
   script:
     - echo "push docker image $imagerepo:$imagetag to regisrty"
 
 deploy_image:
   stage: deploy
-  tags:
-    - shelltag
-    - dockeralpinetag
+
   script:
     - echo "run deploy $imagerepo:$imagetag to $DEPLOYMENT_ENVIROMENT using follow configuration file - $proper_file"
     - cat $proper_file
