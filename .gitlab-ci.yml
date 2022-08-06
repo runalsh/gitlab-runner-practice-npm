@@ -92,7 +92,6 @@ run_unit_test:
   tags:
     - shelltag
     - dockeralpinetag
-    - dockeralpinprivetag
   before_script:
     - cd app
     - npm istall
