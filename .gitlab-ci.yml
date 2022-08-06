@@ -104,6 +104,7 @@ run_unit_test:
     - echo "preparing tesdt"
   script:
     - echo "run unit test form microservice $MICRO_NAME"
+    - npm version
   after_script:
     - echo "clean temp"
 
