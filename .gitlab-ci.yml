@@ -212,7 +212,8 @@ build_image:
     APPPORT: ""
     ENDPOINT: ""
   before_script:
-    - chmod 400 $SSH_PRIVATE_KEY
+    - echo $SSH_KEY | sed -e "s/-----BEGIN RSA PRIVATE KEY-----/&\n/" -e "s/-----END RSA PRIVATE KEY-----/\n&/" -e "s/\S\{64\}/&\n/g"\ > deploy-key.pem
+    - chmod 400 deploy-key.pem
     # - export VERSION=$(cat version.env)  
   script:
     - scp -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY ./docker-compose.yaml admin@$SERVER_HOST:/home/admin
