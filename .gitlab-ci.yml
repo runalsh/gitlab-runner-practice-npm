@@ -97,4 +97,7 @@ run_unit_test:
     - npm install
   script:
     - npm test
-
+  artifacts:
+    reports:
+      junit:
+        app/junit.xml
