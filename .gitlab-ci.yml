@@ -99,7 +99,7 @@ stages:
 run_unit_test:
   stage: test
 
-  image: node:17-alpine
+  image: node:14-alpine
   before_script:
     - echo "preparing tesdt"
   script:
