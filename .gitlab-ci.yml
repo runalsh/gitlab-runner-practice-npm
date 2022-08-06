@@ -151,21 +151,21 @@ push_image:
 
 
 deploy_to_dev:
-    stage: deploy
-    tags: 
-      - shelltag
-    before_script:
-      - chmod 400 $SSH_PIVATE_KEY
-      - export VERSION=$(cat version.env) 
-    script:
-      - scp -o StrictHostKeyChecking=no -i $SSH_PIVATE_KEY ./docker-compose.yaml admin@$DEVSERVER:/home/admin
-      - ssh -o StrictHostKeyChecking=no -i $SSH_PIVATE_KEY admin@$DEVSERVER "
-          docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && 
-          export IMAGE_NAME = $IMAGE_NAME &&
-          export IMAGE_TAG = $VERSION  &&
-          docker compose down &&
-          docker compose up -d"
-    environment:
-      name: development
-      url: $DEVENDPOINT
+  stage: deploy
+  tags: 
+    - shelltag
+  before_script:
+    - chmod 400 $SSH_PIVATE_KEY
+    - export VERSION=$(cat version.env) 
+  script:
+    - scp -o StrictHostKeyChecking=no -i $SSH_PIVATE_KEY ./docker-compose.yaml admin@$DEVSERVER:/home/admin
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PIVATE_KEY admin@$DEVSERVER "
+        docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && 
+        export IMAGE_NAME = $IMAGE_NAME &&
+        export IMAGE_TAG = $VERSION  &&
+        docker compose down &&
+        docker compose up -d"
+  environment:
+    name: development
+    url: $DEVENDPOINT
 
