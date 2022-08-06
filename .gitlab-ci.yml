@@ -87,8 +87,7 @@ workflow:
       when: never
     - when: always 
 
-stages:
-  - build
+
 
 run_unit_test:
   image: node:17-alpine3.14
