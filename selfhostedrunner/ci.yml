@@ -1,0 +1,211 @@
+#cloud-config
+write_files:
+ - path: "/opt/aws/amazon-cloudwatch-agent/etc/config.json"
+   owner: "root:root"
+   permissions: "'0644"
+   content: |
+        {
+        "agent": {
+                "metrics_collection_interval": 60,
+                "run_as_user": "root"
+        },
+        "logs": {
+                "logs_collected": {
+                        "files": {
+                                "collect_list": [
+                                        {
+                                        "file_path": "/actions-runner/_diag/*",
+                                        "log_group_name": "/aws/ec2/epam-py-runner/",
+                                        "log_stream_name": "{instance_id}-runner",
+                                        "retention_in_days": 3
+                                        },
+                                        {
+                                        "file_path": "/var/log/amazon/amazon-cloudwatch-agent/*",
+                                        "log_group_name": "/aws/ec2/epam-py-runner/",
+                                        "log_stream_name": "{instance_id}-cloudwatch-agent",
+                                        "retention_in_days": 3
+                                        },
+                                        {
+                                        "file_path": "/var/log/cloud-init*.log",
+                                        "log_group_name": "/aws/ec2/epam-py-runner/",
+                                        "log_stream_name": "{instance_id}-cloudinit",
+                                        "retention_in_days": 3
+                                        }
+                                ]
+                        }
+                }
+        },
+        "metrics": {
+                "aggregation_dimensions": [
+                        [
+                                "InstanceId"
+                        ]
+                ],
+                "append_dimensions": {
+                        "AutoScalingGroupName": "$${aws:AutoScalingGroupName}",
+                        "ImageId": "$${aws:ImageId}",
+                        "InstanceId": "$${aws:InstanceId}",
+                        "InstanceType": "$${aws:InstanceType}"
+                },
+                "metrics_collected": {
+                        "collectd": {
+                                "metrics_aggregation_interval": 60
+                        },
+                        "cpu": {
+                                "measurement": [
+                                        "cpu_usage_idle",
+                                        "cpu_usage_iowait",
+                                        "cpu_usage_user",
+                                        "cpu_usage_system"
+                                ],
+                                "metrics_collection_interval": 60,
+                                "resources": [
+                                        "*"
+                                ],
+                                "totalcpu": false
+                        },
+                        "disk": {
+                                "measurement": [
+                                        "used_percent",
+                                        "inodes_free"
+                                ],
+                                "metrics_collection_interval": 60,
+                                "resources": [
+                                        "*"
+                                ]
+                        },
+                        "diskio": {
+                                "measurement": [
+                                        "io_time",
+                                        "write_bytes",
+                                        "read_bytes",
+                                        "writes",
+                                        "reads"
+                                ],
+                                "metrics_collection_interval": 60,
+                                "resources": [
+                                        "*"
+                                ]
+                        },
+                        "mem": {
+                                "measurement": [
+                                        "mem_used_percent"
+                                ],
+                                "metrics_collection_interval": 60
+                        },
+                        "netstat": {
+                                "measurement": [
+                                        "tcp_established",
+                                        "tcp_time_wait"
+                                ],
+                                "metrics_collection_interval": 60
+                        },
+                        "statsd": {
+                                "metrics_aggregation_interval": 60,
+                                "metrics_collection_interval": 10,
+                                "service_address": ":8125"
+                        },
+                        "swap": {
+                                "measurement": [
+                                        "swap_used_percent"
+                                ],
+                                "metrics_collection_interval": 60
+                                }
+                        }
+                }
+        }
+
+
+package_update: true
+
+package_upgrade: true
+
+packages:
+ - yum-utils
+ - curl
+ - mc
+ - tar
+ - wget
+ - openssl
+ - nano
+ - nmon
+ - jq
+ - ncdu
+ - amazon-linux-extras
+ - net-tools
+ - unzip
+ - amazon-cloudwatch-agent
+ 
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAr53uTiK0O/sbacgMcsHGp2mL0XvjpxI9O6n2KOPduFbmwKF/ZxLZm6nR1K6Dkj5aeg+BEFft1lrkh08ubJCYkF7/5vXy5dlzlLokCwc3aEOIIxD2WsOaFizmiy/b3KE16bvpkM7WzydlW6LyTaF3BoAikiw5D5IibroSij2mFWGVieXxXJSyryu+xmsNqGywuKc+4DjoaqEJJooBU53OdTkg8RGeN4dCrEWbJIc7agl5MDaBpL8aO6vH4OuGM7u3UFCTgDe6KRlK+bgYs4QEqb55RiNIp0vAOET4jH2QBhP489+5R1V6B/ozx2n0rDo3F3Hrha2Cp835KGoJVl2Gmw== rsa-key-20211028
+
+runcmd:
+  - curl https://freedns.afraid.org/dynamic/update.php?U2NnUkQ5TlYydkk0Wm5UeEVRT0c6MTk3NTIyNDc=
+  - timedatectl set-timezone Europe/Moscow
+  - export PATH="/usr/local/bin:$PATH"
+
+# configure cloudwatch
+  - mkdir -p /usr/share/collectd
+  - touch /usr/share/collectd/types.db
+  - /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c ssm:AmazonCloudWatch-linux -s
+  - /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/config.json
+  - systemctl enable amazon-cloudwatch-agent
+  - systemctl restart amazon-cloudwatch-agent
+
+ # Download the binary for your system
+  - sudo curl -L --output /usr/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+# Give it permission to execute
+  - sudo chmod +x /usr/bin/gitlab-runner
+# Create a GitLab Runner user
+  - sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+# Install and run as a service
+  - sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+  - sudo gitlab-runner start
+  - sudo gitlab-runner register --non-interactive --url https://gitlab.com/ --executor shell  --name shell --tag-list shelltag --registration-token GR1348941QczVNcps5RmEiPsqWAkJ
+  - sudo gitlab-runner register --non-interactive --url https://gitlab.com/ --executor docker --name docker  --tag-list dockeralpinetag --docker-image alpine:latest  --docker-pull-policy always --registration-token GR1348941QczVNcps5RmEiPsqWAkJ
+
+  
+# # install and configure runner
+  # - mkdir actions-runner && cd actions-runner
+  # - curl -o actions-runner-linux-x64-2.291.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.291.1/actions-runner-linux-x64-2.291.1.tar.gz
+  # - echo "1bde3f2baf514adda5f8cf2ce531edd2f6be52ed84b9b6733bf43006d36dcd4c  actions-runner-linux-x64-2.291.1.tar.gz" | shasum -a 256 -c
+  # - tar xzf ./actions-runner-linux-x64-2.291.1.tar.gz
+  # - export RUNNER_ALLOW_RUNASROOT="1"
+  # - ./config.sh --url https://github.com/runalsh/epam_again_aws --token AFBAYCLGIZTVDP4MSOQJFUTCQZO6M
+  # - ./svc.sh install
+  # - ./svc.sh start
+
+# python/pip install
+  - sudo  amazon-linux-extras enable python3.8
+  - sudo yum install python38 -y
+  - sudo wget https://bootstrap.pypa.io/get-pip.py
+  - sudo alias python3=python3.8
+  - sudo python3 get-pip.py
+  - sudo python3 -m pip install --upgrade pip
+
+# install terraform
+  - sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+  - sudo yum -y install terraform
+
+# install nodejs for terraform  
+  - sudo curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+  - sudo yum install nodejs -y
+
+#install aws cli
+  - sudo url "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  - sudo unzip awscliv2.zip
+  - sudo  ./aws/install --bin-dir /usr/bin --install-dir /usr/local/aws-cli --update
+
+# install helm
+  - sudo curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  - sudo mv /usr/local/bin/helm /usr/bin/helm
+
+# install kubectl
+  - sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+  - sudo chmod +x ./kubectl
+  - sudo mv ./kubectl /usr/bin/kubectl
+  # - sudo curl -o /usr//bin/kubectl -LO "https://dl.k8s.io/release/v1.23.6/bin/linux/amd64/kubectl"
+  # - sudo chmod +x /usr/bin/kubectl
+
+
+
