@@ -81,7 +81,7 @@
 #   script:
 #     - docker run -p 3000:3000 --name test-ci registry.gitlab.com/runalsh/mymymy:main
 
-image: node:17-alpine
+image: alpine:latest
 
 workflow:
   rules:
@@ -100,6 +100,7 @@ stages:
 
 run_unit_test:
   stage: test
+  image: node:17-alpine
   before_script:
     - echo "preparing tesdt"
   script:
