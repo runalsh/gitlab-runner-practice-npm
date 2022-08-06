@@ -81,7 +81,6 @@
 #   script:
 #     - docker run -p 3000:3000 --name test-ci registry.gitlab.com/runalsh/mymymy:main
 
-image: alpine:3.15.1
 
 
 workflow:
@@ -101,9 +100,7 @@ stages:
 
 run_unit_test:
   stage: test
-  tags:
-    - shelltag
-    - dockeralpinetag
+
   image: node:17-alpine
   before_script:
     - echo "preparing tesdt"
@@ -115,9 +112,7 @@ run_unit_test:
 
 run_lint_test:
   stage: test
-  tags:
-    - shelltag
-    - dockeralpinetag
+
   before_script:
     - echo "preparing test data"
   script:
@@ -127,9 +122,7 @@ run_lint_test:
 
 build_image:
   stage: build
-  tags:
-    - shelltag
-    - dockeralpinetag
+
   only:
     - main
   script:
@@ -139,9 +132,7 @@ build_image:
 
 push_image:
   stage: build
-  tags:
-    - shelltag
-    - dockeralpinetag
+
   script:
     - echo "push docker image $imagerepo:$imagetag to regisrty"
 
