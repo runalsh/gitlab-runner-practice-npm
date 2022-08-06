@@ -116,6 +116,7 @@ build_image:
     - docker build -t $CI_REGISTRY_IMAGE:1.0 .
 
 
+
 push_image:
   stage: build
   needs: 
