@@ -114,6 +114,7 @@ run_lint_test:
   tags:
     - shelltag
     - dockeralpinetag
+    - dockeralpinprivetag
   before_script:
     - echo "preparing test data"
   script:
