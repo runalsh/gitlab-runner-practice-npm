@@ -136,6 +136,7 @@ build_image:
     - echo "build docker image"
     - echo "tag docker image $imagerepo:$imagetag"
 
+
 push_image:
   stage: build
   tags:
