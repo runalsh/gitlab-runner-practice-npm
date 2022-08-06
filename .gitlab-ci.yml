@@ -74,7 +74,7 @@ build-docker:
     
 running:
   stage: runeeeeeee
-  need:
+  needs:
     - build-docker
   only: 
     - main
