@@ -96,6 +96,7 @@ variables:
   IMAGE_NAME: $CI_REGISTRY_IMAGE
   IMAGE_TAG: "1.1"
   DEVSERVER: "18.195.191.206"
+  DEVENDPOINT: "ec2-18-195-191-206.eu-central-1.compute.amazonaws.com"
 
 run_unit_test:
   image: node:17-alpine3.14
@@ -148,3 +149,11 @@ deploy_to_dev:
       - ssh -o StrictHostKeyChecking=no -i $SSH_PIVATE_KEY admin@$DEVSERVER "
           docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && 
           docker run -d -p 3000:3000 $IMAGE_NAME:$IMAGE_TAG"
+    environment:
+      name: development
+      url: $DEVENDPOINT
+
+
+
+
+
