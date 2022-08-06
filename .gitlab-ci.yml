@@ -75,7 +75,7 @@ build-docker:
 running:
   stage: runeeeeeee
   needs:
-    - build-docker
+    - build
   only: 
     - main
   before_script:
