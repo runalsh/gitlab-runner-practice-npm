@@ -1,6 +1,6 @@
 version: "3.3"
 services:
   app:
-    image: registry.gitlab.com/runalsh/mymymy/microservice/shopping-cart:1.2
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
     ports:
       - 3000:3000
