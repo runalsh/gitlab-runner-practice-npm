@@ -96,8 +96,6 @@ stages:
   - build
   - deploy
 
-
-
 run_unit_test:
   stage: test
   before_script:
@@ -106,7 +104,6 @@ run_unit_test:
     - echo "run unit test form microservice $MICRO_NAME"
   after_script:
     - echo "clean temp"
-
 
 run_lint_test:
   stage: test
