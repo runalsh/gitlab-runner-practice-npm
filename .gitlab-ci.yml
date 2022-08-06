@@ -83,7 +83,7 @@
 
 workflow:
   rules:
-    - if: $CI_COMMIT_BRANCH != "main"
+    - if: $CI_COMMIT_BRANCH != "main" && $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
     - when: always 
 
@@ -114,6 +114,8 @@ run_lint_test:
 
 build_image:
   stage: build
+  only:
+    - main
   script:
     - echo "build docker image"
 
