@@ -97,7 +97,7 @@ run_unit_test:
   before_script:
     - echo "preparing tesdt"
   script:
-    - echo "run unit test"
+    - echo "run unit test form microservice $MICRO_NAME"
   after_script:
     - echo "clean temp"
 
@@ -126,7 +126,7 @@ push_image:
 deploy_image:
   stage: deploy
   script:
-    - echo "run deploy"
+    - echo "run deploy to $DEPLOYMENT_ENVIROMENT"
 
 
 
