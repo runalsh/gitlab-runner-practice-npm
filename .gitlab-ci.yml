@@ -98,6 +98,8 @@ run_unit_test:
   script:
     - npm test
   artifacts:
+    when: always
+    path:
+      - app/junit.xml
     reports:
-      junit:
-        app/junit.xml
+      junit: app/junit.xml
