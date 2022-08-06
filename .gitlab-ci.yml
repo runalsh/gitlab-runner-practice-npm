@@ -92,17 +92,14 @@ run_unit_test:
   stage: test
   before_script:
     - echo "preparing tesdt"
-    - pwd
-    - ls
-    - mkdir test-data
-    - ls
+    - chmod +x ./prepare-test.sh
+    - ./prepare-test.sh
   script:
     - echo "run unit test"
   after_script:
     - echo "clean temp"
     - rm -r test-data
     - ls
-
 
 run_lint_test:
   stage: test
