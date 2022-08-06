@@ -1,15 +1,5 @@
-#### This project is for the GitLab CI/CD course
+#### This project is for the GitLab CI/CD course on NPM
 
-##### Test
-The project uses jest library for tests. (see "test" script in package.json)
-There is 1 test (server.test.js) in the project that checks whether the main index.html file exists in the project. 
+For provisioning used Terraform in AWS EC2
 
-To run the nodejs test:
-
-    npm run test
-
-Make sure to download jest library before running test, otherwise jest command defined in package.json won't be found.
-
-    npm install
-
-In order to see failing test, remove index.html or rename it and run tests.
+You need 1 runner for gitlab and 1 server for deployment
