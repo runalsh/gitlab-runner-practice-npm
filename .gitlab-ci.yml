@@ -81,6 +81,8 @@
 #   script:
 #     - docker run -p 3000:3000 --name test-ci registry.gitlab.com/runalsh/mymymy:main
 
+image: node:17-alpine
+
 workflow:
   rules:
     - if: $CI_COMMIT_BRANCH != "main" && $CI_PIPELINE_SOURCE != "merge_request_event"
