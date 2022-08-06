@@ -1,85 +1,3 @@
-# stages:
-#     - build
-#     - test
-#     - deploy
-
-# maven-build:
-#   image: maven:3-jdk-11
-#   stage: build
-#   script: "mvn package -B"
-#   artifacts:
-#     paths:
-#       - target/gitlab-ci-demo.jar
-
-# image: alpine
-
-# stages:
-#   - compile
-#   - test
-#   - package
-
-# compile:
-#   stage: compile
-#   script: 
-#     - echo "Hello world 1" > file1.txt
-#     - echo "Hello world 2" > file2.txt
-#     - cat file1.txt file2.txt > compiled.txt
-#   artifacts:
-#     paths:
-#     - compiled.txt
-#     - file1.txt
-
-
-# test:
-#   stage: test
-#   script: cat compiled.txt | grep -q 'Hello world'
-
-# pack-gz:
-#   stage: package
-#   script: cat compiled.txt | gzip > packaged.gz
-#   artifacts:
-#     paths:
-#     - packaged.gz
-#     - file1.txt
-
-# pack-iso:
-#   stage: package
-#   before_script:
-#   - echo "ipv6" >> /etc/modules
-#   - apk update
-#   - apk add xorriso
-#   script:
-#   - mkisofs -o ./packaged.iso ./compiled.txt
-#   artifacts:
-#     paths:
-#     - packaged-$CI_JOB_ID-$CI_COMMIT_SHORT_SHA.iso    
-
-
-# stages:
-#   - build
-#   - runeeeeeee
-
-# build-docker:
-#   stage: build
-#   image: docker:stable
-#   only:
-#     - main
-#   services:
-#     - docker:dind
-#   before_script:
-#     - docker login -u gitlab+deploy-token-1249784 -p ${ACCESS_TOKEN} registry.gitlab.com
-#   script:
-#     - docker build -t ${DOCKER_ENV_CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} --build-arg branch=${CI_COMMIT_REF_NAME} .
-#     - docker push ${DOCKER_ENV_CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
-    
-# running:
-#   stage: runeeeeeee
-#   only: 
-#     - main
-#   before_script:
-#     - docker login -u gitlab+deploy-token-1249784 -p ${ACCESS_TOKEN} registry.gitlab.com
-#   script:
-#     - docker run -p 3000:3000 --name test-ci registry.gitlab.com/runalsh/mymymy:main
 
 workflow:
   rules:
@@ -88,8 +6,8 @@ workflow:
     - when: always 
 
 stages:
-  # - test
-  # - secuirity
+  - test
+  - secuirity
   - build
   - deploydev
   - deploystaging
@@ -105,64 +23,64 @@ variables:
   PROD_SERVER_HOST: 18.195.191.206
   PRODPOINT: http://ec2-18-195-191-206.eu-central-1.compute.amazonaws.com:5000
 
-# run_unit_test:
-#   image: node:17-alpine
-#   stage: test
-#   tags:
-#     - dockeralpinetag
-#   cache:
-#     key: "$CI_COMMIT_REF_NAME"
-#     paths:
-#       - app/node_modules
-#     policy: pull-push  
-#   before_script:
-#     - cd app
-#     - npm install
-#   script:
-#     - npm test
-#   artifacts:
-#     when: always
-#     paths:
-#       - app/junit.xml
-#     reports:
-#       junit: app/junit.xml
+run_unit_test:
+  image: node:17-alpine
+  stage: test
+  tags:
+    - dockeralpinetag
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
+      - app/node_modules
+    policy: pull-push  
+  before_script:
+    - cd app
+    - npm install
+  script:
+    - npm test
+  artifacts:
+    when: always
+    paths:
+      - app/junit.xml
+    reports:
+      junit: app/junit.xml
 
-# run_lint_test:
-#   image: node:17-alpine
-#   stage: test
-#   tags:
-#     - dockeralpinetag
-#   cache:
-#     key: "$CI_COMMIT_REF_NAME"
-#     paths:
-#       - app/node_modules  
-#     policy: pull  
-#   before_script:
-#     - cd app
-#     - npm install
-#   script:
-#     - echo "run linter test"
+run_lint_test:
+  image: node:17-alpine
+  stage: test
+  tags:
+    - dockeralpinetag
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
+      - app/node_modules  
+    policy: pull  
+  before_script:
+    - cd app
+    - npm install
+  script:
+    - echo "run linter test"
 
-# sonarqube-check:
-#   stage: secuirity
-#   image:
-#     name: sonarsource/sonar-scanner-cli:latest
-#     entrypoint: [""]
-#   variables:
-#     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-#     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-#   cache:
-#     key: "${CI_JOB_NAME}"
-#     paths:
-#       - .sonar/cache
-#   script:
-#     - sonar-scanner      
+sonarqube-check:
+  stage: secuirity
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner      
 
-# sast:
-#   stage: secuirity
+sast:
+  stage: secuirity
 
-# include:
-#   - template: Jobs/SAST.gitlab-ci.yml
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
 
 build_image:
   # image: docker:stable
@@ -183,21 +101,21 @@ build_image:
     paths:
      - version.env
 
-# push_image:
-#   stage: build
-#   needs: 
-#     - build_image
-#   tags:
-#     - shelltag
-#   before_script: 
-#     # - cat version.env
-#     # - export VERSION=$(cat version.env)   
-#     - echo "docker registry url is $CI_REGISTRY"
-#     - echo "docker image is $CI_REGISTRY_IMAGE"
-#     - echo "docker user is $CI_REGISTRY_USER"
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#   script:
-#     - docker push $IMAGE_NAME:$VERSION
+push_image:
+  stage: build
+  needs: 
+    - build_image
+  tags:
+    - shelltag
+  before_script: 
+    # - cat version.env
+    # - export VERSION=$(cat version.env)   
+    - echo "docker registry url is $CI_REGISTRY"
+    - echo "docker image is $CI_REGISTRY_IMAGE"
+    - echo "docker user is $CI_REGISTRY_USER"
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker push $IMAGE_NAME:$VERSION
 
 
 .deploy:
