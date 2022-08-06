@@ -87,63 +87,15 @@ workflow:
       when: never
     - when: always 
 
-variables:
-    imagerepo: docker.io/my-docker-id/myapp
-    imagetag: v1.0
-
-stages:
-  - test
-  - build
-  - deploy
-
 run_unit_test:
-  stage: test
-
-  image: node:14-alpine
+  image: node:17-alpine
+  tags:
+    - shelltag
+    - dockeralpinetag
+    - dockeralpinprivetag
   before_script:
-    - echo "preparing tesdt"
+    - cd app
+    - npm istall
   script:
-    - echo "run unit test form microservice $MICRO_NAME"
-    - npm version
-  after_script:
-    - echo "clean temp"
-
-
-run_lint_test:
-  stage: test
-
-  before_script:
-    - echo "preparing test data"
-  script:
-    - echo "run lint test"
-  after_script:
-    - echo "clean temp"   
-
-build_image:
-  stage: build
-
-  only:
-    - main
-  script:
-    - echo "build docker image"
-    - echo "tag docker image $imagerepo:$imagetag"
-
-
-push_image:
-  stage: build
-
-  script:
-    - echo "push docker image $imagerepo:$imagetag to regisrty"
-
-deploy_image:
-  stage: deploy
-
-  script:
-    - echo "run deploy $imagerepo:$imagetag to $DEPLOYMENT_ENVIROMENT using follow configuration file - $proper_file"
-    - cat $proper_file
-
-
-
-
-
+    - npm test
 
