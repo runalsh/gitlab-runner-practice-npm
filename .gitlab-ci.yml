@@ -145,6 +145,6 @@ deploy_to_dev:
     before_script:
       - chmod 400 $SSH_PIVATE_KEY
     script:
-      - ssh -o StrictHostKeyChecking=no -i $SSH_PIVATE_KEY admin@$DEVSERVER
-      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-      - docker run -d -p 3000:3000 $IMAGE_NAME:$IMAGE_TAG
+      - ssh -o StrictHostKeyChecking=no -i $SSH_PIVATE_KEY admin@$DEVSERVER "
+          docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && 
+          docker run -d -p 3000:3000 $IMAGE_NAME:$IMAGE_TAG"
