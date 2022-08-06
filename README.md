@@ -1,23 +1,15 @@
-# test-ci
+#### This project is for the GitLab CI/CD course
 
-## Build Setup
+##### Test
+The project uses jest library for tests. (see "test" script in package.json)
+There is 1 test (server.test.js) in the project that checks whether the main index.html file exists in the project. 
 
-```bash
-# install dependencies
-$ yarn install
+To run the nodejs test:
 
-# serve with hot reload at localhost:3000
-$ yarn dev
+    npm run test
 
-# build for production and launch server
-$ yarn build
-$ yarn start
+Make sure to download jest library before running test, otherwise jest command defined in package.json won't be found.
 
-# generate static project
-$ yarn generate
-```
+    npm install
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
-
-
-### some chaNGES
+In order to see failing test, remove index.html or rename it and run tests.

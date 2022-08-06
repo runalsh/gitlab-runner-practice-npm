@@ -1,12 +1,10 @@
-FROM node:14-alpine AS node
+FROM node:16-alpine
 
-ARG branch
-ENV GIT_BRANCH ${branch}
+WORKDIR /usr/src/app
 
-WORKDIR /var/www
-ADD . /var/www
-
-RUN yarn install
+COPY ./app/package*.json ./
+RUN npm install
+COPY ./app .
 
 EXPOSE 3000
-ENTRYPOINT yarn dev
+CMD ["npm", "start"]
