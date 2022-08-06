@@ -107,6 +107,7 @@ run_unit_test:
       junit: app/junit.xml
 
 build_image:
+  stage: build
   tags:
     - dockeralpinetag
   script:
@@ -114,7 +115,6 @@ build_image:
 
 
 push_image:
-  needs:
   stage: build
   needs: 
     - build_image
