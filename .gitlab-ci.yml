@@ -221,7 +221,7 @@ push_image:
         docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && 
         export IMAGE_NAME=$IMAGE_NAME &&
         export IMAGE_TAG=$VERSION  &&
-        export APPPORT=3000 &&
+        export APPLICPORT=$APPPORT &&
         export COMPOSE_PROJECT_NAME=$DEPLOY_ENV &&
         docker compose down &&
         docker compose up -d"

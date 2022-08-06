@@ -3,4 +3,4 @@ services:
   app:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
     ports:
-      - ${APPPORT}:3000
+      - ${APPLICPORT}:3000
