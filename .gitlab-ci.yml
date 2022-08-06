@@ -183,29 +183,26 @@ build_image:
     # paths:
     #   - version.env
 
-push_image:
-  stage: build
-  needs: 
-    - build_image
-  tags:
-    - shelltag
-  before_script: 
-    # - cat version.env
-    # - export VERSION=$(cat version.env)   
-    - echo "docker registry url is $CI_REGISTRY"
-    - echo "docker image is $CI_REGISTRY_IMAGE"
-    - echo "docker user is $CI_REGISTRY_USER"
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - docker push $IMAGE_NAME:$VERSION
+# push_image:
+#   stage: build
+#   needs: 
+#     - build_image
+#   tags:
+#     - shelltag
+#   before_script: 
+#     # - cat version.env
+#     # - export VERSION=$(cat version.env)   
+#     - echo "docker registry url is $CI_REGISTRY"
+#     - echo "docker image is $CI_REGISTRY_IMAGE"
+#     - echo "docker user is $CI_REGISTRY_USER"
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#   script:
+#     - docker push $IMAGE_NAME:$VERSION
 
 
 .deploy:
   tags: 
     - shelltag
-  before_script:
-    - chmod 400 $SSH_PRIVATE_KEY
-    - export VERSION=$(cat version.env)
   dependencies:
     - build_image
   variables:
@@ -214,6 +211,9 @@ push_image:
     DEPLOY_ENV: ""
     APPPORT: ""
     ENDPOINT: ""
+  before_script:
+    - chmod 400 $SSH_PRIVATE_KEY
+    # - export VERSION=$(cat version.env)  
   script:
     - scp -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY ./docker-compose.yaml admin@$SERVER_HOST:/home/admin
     - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY admin@$SERVER_HOST "
