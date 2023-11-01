@@ -1,4 +1,4 @@
-#### This project is for the GitLab CI/CD course
+#### This project is for the GitLab CI/CD
 
 
 For provision gitlab runner and deployment server used Terraform in AWS EC2 from folder selfhostedrunner
